@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Insert Row into Pagamento</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+            }
+            .form-container {
+                width: 350px;
+                background-color: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            form {
+                display: flex;
+                flex-direction: column;
+            }
+            label {
+                margin-top: 10px;
+            }
+            input[type="number"],
+            input[type="date"],
+            input[type="file"] {
+                padding: 5px;
+                margin-top: 5px;
+            }
+            input[type="submit"],
+            button {
+                margin-top: 15px;
+                padding: 10px 20px;
+                border: none;
+                color: white;
+                background-color: #4caf50;
+                cursor: pointer;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+            input[type="submit"]:hover,
+            button:hover {
+                background-color: #45a049;
+            }
+            hr {
+                margin: 20px 0;
+            }
+            .button_pagamentos {
+                background-color: #ff00ff;
+                border: none;
+                color: white;
+                padding: 8px 10px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <button class="button_pagamentos" onclick="window.location.href = '/pagadores'">Cadastrar Pagador</button>
+        <button class="button_pagamentos" onclick="window.location.href = '/unidades'">Cadastrar Unidade</button>
+        <br />
+        <br />
+        <div class="form-container">
+            <form method="post" action="http://localhost:5000/add_payment" enctype="multipart/form-data">
+                <label for="pagador_id">Pagador ID:</label><br />
+                <select id="pagador_id" name="pagador_id">
+                    {% for pagador in pagadores %}
+                    <option value="{{ pagador[0] }}">{{ pagador[0] }} ({{ pagador[1] }})</option>
+                    {% endfor %}</select
+                ><br />
+
+                <label for="data_pagamento">Data Pagamento:</label><br />
+                <input required type="date" id="data_pagamento" name="data_pagamento" /><br />
+
+                <label for="comprovante">Comprovante:</label><br />
+                <input required type="file" id="comprovante" name="comprovante" /><br />
+
+                <label for="ano_referencia">Ano Referencia:</label><br />
+                <input required type="number" id="ano_referencia" name="ano_referencia" /><br />
+
+                <label for="mes_referencia">Mes Referencia:</label><br />
+                <input required type="number" id="mes_referencia" name="mes_referencia" /><br />
+
+                <label for="unidade_id">Unidade ID:</label><br />
+                <select id="unidade_id" name="unidade_id">
+                    {% for unidade in unidades %}
+                    <option value="{{ unidade[0] }}">{{ unidade[0] }} ({{ unidade[1] }})</option>
+                    {% endfor %}</select
+                ><br />
+
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+        <br />
+        <br />
+        <button class="button_pagamentos" onclick="window.location.href = '/pagamentos'">Pagamentos</button>
+    </body>
+</html>

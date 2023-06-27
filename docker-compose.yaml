@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+    mysql:
+        image: mysql:latest
+        environment:
+            MYSQL_DATABASE: condomManager
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin123
+            MYSQL_ROOT_PASSWORD: admin123
+        volumes:
+            - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+        ports:
+            - 3306:3306
