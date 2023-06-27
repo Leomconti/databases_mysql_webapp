@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 HOST = "localhost"
 DATABASE = "condomManager"
-USER = "admin"
+USER = "root"
 PASSWORD = "admin123"
 db = Db(HOST, DATABASE, USER, PASSWORD)
 
@@ -15,8 +15,9 @@ db = Db(HOST, DATABASE, USER, PASSWORD)
 @app.route('/')
 def home():
     # O que esta em array tem que ser pego do banco de dados
-    # query pra puxar id e nome de unidade e pagador, da um jeito de organizar em lista zipada
+    # quer pra puxar id e nome de unidade e pagador, da um jeito de organizar em lista zipada
     # TODO: ARTHUR
+    db.get_payers()
     pagador_ids = [101, 102, 103, 104, 105]
     pagador_nomes = ["João", "Maria", "José", "Pedro", "Ana"]
     unidade_ids = [1001, 1002, 1003, 1004, 1005]
@@ -72,7 +73,7 @@ def add_unidade():
     numero_identificador = request.form.get('numero_identificador')
     localizacao = request.form.get('localizacao')
 
-    # querys para insert
+    Db.add_unit(numero_identificador, localizacao)
     return render_template('views/success.html')
 
 # TODO: ARHUR
@@ -85,11 +86,7 @@ def add_payment():
     mes_referencia = request.form.get('mes_referencia')
     unidade_id = request.form.get('unidade_id')
     
-    
-    # TODO: ARTHUIR - TESTAR ETC, SO COLOQUEI
-    # db.run_query(f"INSERT INTO condomManager.pagamento (pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id) VALUES ({pagador_id}, {data_pagamento}, {comprovante}, {ano_referencia}, {mes_referencia}, {unidade_id});")
-    # testar o insert aqui   -- tem que ser procedure, no back ta como procedure ok
-    # db.insert_pagamento(pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id)
+    Db.add_payment(pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id)
     
     return render_template('views/success.html')
 
