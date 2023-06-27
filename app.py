@@ -80,7 +80,7 @@ def add_payment():
     mes_referencia = request.form.get('mes_referencia')
     unidade_id = request.form.get('unidade_id')
     
-    db.add_payment(pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id, time.strftime('%Y-%m-%d %H:%M:%S'))
+    db.add_payment(pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id)
     
     return render_template('views/success.html')
 

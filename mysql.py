@@ -26,9 +26,9 @@ class Db:
         conn.close()
         return [True, "Conexão fechada!"]
                 
-    def insert_pagamento(self, payerId: int, paymentDate: datetime, receipt: bytes, referenceYear: int, referenceMonth: int, unitId: int):
+    def add_payment(self, payerId: int, paymentDate: datetime, receipt: bytes, referenceYear: int, referenceMonth: int, unitId: int):
         cursor = self.db
-        paymentDate = paymentDate.strftime('%Y-%m-%d')
+        paymentDate = datetime.strptime(paymentDate, "%Y-%m-%d").strftime("%Y-%m-%d")
         cursor.callproc('InsertPagamento', (payerId, paymentDate, receipt, referenceYear, referenceMonth, unitId))
         self.dbc.commit()
 
@@ -47,7 +47,7 @@ class Db:
         self.dbc.commit()
 
 
-    def add_payment(self,payerId, payedDate,docPayed,yearRef, mesRef, unitId, regData):
+    def nadd_payment(self,payerId, payedDate,docPayed,yearRef, mesRef, unitId, regData):
         cursor = self.db
         sql = "INSERT INTO Pagamento (pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id, data_registro) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         values = (payerId, payedDate,docPayed, yearRef, mesRef, unitId, regData)
