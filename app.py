@@ -1,5 +1,6 @@
 import os
 import io
+import time
 from flask import Flask, send_file, render_template, request
 from mysql import Db
 
@@ -17,30 +18,33 @@ def home():
     # O que esta em array tem que ser pego do banco de dados
     # quer pra puxar id e nome de unidade e pagador, da um jeito de organizar em lista zipada
     # TODO: ARTHUR
-    db.get_payers()
-    pagador_ids = [101, 102, 103, 104, 105]
-    pagador_nomes = ["João", "Maria", "José", "Pedro", "Ana"]
-    unidade_ids = [1001, 1002, 1003, 1004, 1005]
-    unidade_nomes = ["Apto 101", "Apto 102", "Apto 103", "Apto 104", "Apto 105"]
+    pagadores = db.get_payers()
+    unidades = db.get_units()
+    pagador_ids = []
+    for row in pagadores:
+        pagador_ids.append(row[0])
+    pagador_nomes = []
+    for row in pagadores:
+        pagador_nomes.append(row[1])
+    unidade_ids = []
+    for row in unidades:
+        unidade_ids.append(row[0])
+    unidade_nomes = []
+    for row in unidades:
+        unidade_nomes.append(row[2])
     pagadores = list(zip(pagador_ids, pagador_nomes))
     unnidades = list(zip(unidade_ids, unidade_nomes))
     return render_template('views/home.html', pagadores = pagadores, unidades = unnidades)
 
 @app.route('/pagamentos')
 def pagamentos():
-    # -- QUERY AQUI!!!! --
-    # TODO: ARTHUR
-    # column_names, rows = db.run_query("SELECT * FROM condomManager.pagamento;")
-    # O que esta em array tem que ser pego do banco de dados
-    # Literal so testar a qeury ali de cima
+    
+    resultado = db.get_payments()
     column_names = ["payment_id", "pagador_id", "data_pagamento", "comprovante", "ano_referencia", "mes_referencia", "unidade_id", "data_registro"]
-    rows = [
-        [1, 101, '2023-01-01', 'Sample comprovante 1', 2023, 1, 1001, '2023-01-01 10:00:00'],
-        [2, 102, '2023-02-01', 'Sample comprovante 2', 2023, 2, 1002, '2023-02-01 11:00:00'],
-        [3, 103, '2023-03-01', 'Sample comprovante 3', 2023, 3, 1003, '2023-03-01 12:00:00'],
-        [4, 104, '2023-04-01', 'Sample comprovante 4', 2023, 4, 1004, '2023-04-01 13:00:00'],
-        [5, 105, '2023-05-01', 'Sample comprovante 5', 2023, 5, 1005, '2023-05-01 14:00:00']
-    ]
+    rows = []
+
+    for row in resultado:
+        rows.append(row)
     
     return render_template('views/pagamento.html', column_names=column_names, rows=rows)
 
@@ -64,7 +68,7 @@ def add_pagador():
     telefone_contato = request.form.get('telefone_contato')
     
     # querys para insert 
-
+    db.add_payer(nome_completo, email_contato, num_documento_identificacao, telefone_contato)
     return render_template('views/success.html')
 
 # TODO: ARTHUR
@@ -73,7 +77,7 @@ def add_unidade():
     numero_identificador = request.form.get('numero_identificador')
     localizacao = request.form.get('localizacao')
 
-    Db.add_unit(numero_identificador, localizacao)
+    db.add_unit(numero_identificador, localizacao)
     return render_template('views/success.html')
 
 # TODO: ARHUR
@@ -86,7 +90,7 @@ def add_payment():
     mes_referencia = request.form.get('mes_referencia')
     unidade_id = request.form.get('unidade_id')
     
-    Db.add_payment(pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id)
+    db.add_payment(pagador_id, data_pagamento, comprovante, ano_referencia, mes_referencia, unidade_id, time.strftime('%Y-%m-%d %H:%M:%S'))
     
     return render_template('views/success.html')
 
