@@ -15,9 +15,6 @@ db = Db(HOST, DATABASE, USER, PASSWORD)
 # Routes for views
 @app.route('/')
 def home():
-    # O que esta em array tem que ser pego do banco de dados
-    # quer pra puxar id e nome de unidade e pagador, da um jeito de organizar em lista zipada
-    # TODO: ARTHUR
     pagadores = db.get_payers()
     unidades = db.get_units()
     pagador_ids = []
@@ -56,22 +53,16 @@ def unidade():
 def pagadores():
     return render_template('views/pagador.html')
 
-
-# FUNCOES PARA ADICIONAR NO BANCO DE DADOS ETC
-
-# TODO: ARTHUR
 @app.route('/add_pagador', methods=['POST'])
 def add_pagador():
     nome_completo = request.form.get('nome_completo')
     email_contato = request.form.get('email_contato')
     num_documento_identificacao = request.form.get('num_documento_identificacao')
     telefone_contato = request.form.get('telefone_contato')
-    
-    # querys para insert 
+
     db.add_payer(nome_completo, email_contato, num_documento_identificacao, telefone_contato)
     return render_template('views/success.html')
 
-# TODO: ARTHUR
 @app.route('/add_unidade', methods=['POST'])
 def add_unidade():
     numero_identificador = request.form.get('numero_identificador')
@@ -80,7 +71,6 @@ def add_unidade():
     db.add_unit(numero_identificador, localizacao)
     return render_template('views/success.html')
 
-# TODO: ARHUR
 @app.route('/add_payment', methods=['POST'])
 def add_payment():
     pagador_id = request.form.get('pagador_id')
@@ -97,10 +87,7 @@ def add_payment():
 # TODO: ARTHUR
 @app.route('/download_comprovante/<int:payment_id>')
 def download_comprovante(payment_id):
-    # Aqui catar comprovante
-    # query = f"SELECT comprovante FROM Pagamento WHERE payment_id = {payment_id}"
-    # comprovante = db.run_query(query)
-    comprovante = b'BANANA'
+    comprovante = db.get_docPayed(payment_id)[0][3]
 
     return send_file(path_or_file=io.BytesIO(comprovante),
                      as_attachment=True,

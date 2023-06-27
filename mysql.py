@@ -25,24 +25,6 @@ class Db:
     def close_connection(self, host):
         conn.close()
         return [True, "Conexão fechada!"]
-
-
-    def run_query(self, query: str):
-        cursor = None
-        try:
-            cursor = self.db
-            cursor.execute(query)
-            rows = cursor.fetchall()
-            for row in rows:
-            # Access row data using index or column names
-                print(row)
-            cursor.close()
-            return rows
-        except Exception as e:
-            result = str(e)
-            return False, result
-        finally:
-            cursor.close()
                 
     def insert_pagamento(self, payerId: int, paymentDate: datetime, receipt: bytes, referenceYear: int, referenceMonth: int, unitId: int):
         cursor = self.db
@@ -92,6 +74,14 @@ class Db:
         cursor = self.db
         sql = "SELECT * FROM Pagamento"
         cursor.execute(sql)
+        result = cursor.fetchall()
+        #print(result)
+        return result
+    
+    def get_docPayed(self, paymentId):
+        cursor = self.db
+        sql = "SELECT * FROM Pagamento where payment_id = %s"
+        cursor.execute(sql, paymentId)
         result = cursor.fetchall()
         #print(result)
         return result
